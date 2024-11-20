@@ -2,8 +2,10 @@ package disk
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -44,6 +46,11 @@ func (p *DiskPlugin) Attach(opts interface{}, nodeName string) utils.Result {
 		log.Infof("Disk Already Attached, DiskId: %s, Device: %s", opt.VolumeName, devicePath)
 		return utils.Result{Status: "Success", Device: devicePath}
 	}
+	devicePath := GetDevicePath(opt.VolumeId)
+	if len(devicePath) > 0 {
+		return utils.Result{Status: "Success", Device: devicePath}
+	}
+	//iscsi 协议
 	devicePath, err := GetDevicePathByScsiCmd(opt.VolumeId)
 	if err != nil {
 		log.Errorf("Failed to get device path from scsi cmd of volume %s, with error: %v", opt.VolumeId, err)
@@ -54,6 +61,7 @@ func (p *DiskPlugin) Attach(opts interface{}, nodeName string) utils.Result {
 	} else {
 		return utils.Result{Status: "Success", Device: devicePath}
 	}
+
 }
 
 // Detach current kubelet call detach not provide plugin spec;
@@ -161,6 +169,36 @@ func (p *DiskPlugin) Mountdevice(mountPath string, opts interface{}) utils.Resul
 	return utils.NotSupport()
 }
 
+// GetDevicePath returns the path of an attached block storage volume, specified by its id.
+func GetDevicePath(volumeID string) string {
+	// Build a list of candidate device paths.
+	// Certain Nova drivers will set the disk serial ID, including the Cinder volume id.
+	candidateDeviceNodes := []string{
+		// KVM
+		fmt.Sprintf("virtio-%s", volumeID[:20]),
+		fmt.Sprintf("virtio-%s", volumeID),
+		// KVM virtio-scsi
+		fmt.Sprintf("scsi-0QEMU_QEMU_HARDDISK_%s", volumeID[:20]),
+		fmt.Sprintf("scsi-0QEMU_QEMU_HARDDISK_%s", volumeID),
+		// ESXi
+		fmt.Sprintf("wwn-0x%s", strings.Replace(volumeID, "-", "", -1)),
+	}
+
+	files, err := ioutil.ReadDir("/dev/disk/by-id/")
+	if err != nil {
+		log.Errorf("ReadDir failed with error %v", err)
+	}
+
+	for _, f := range files {
+		for _, c := range candidateDeviceNodes {
+			if c == f.Name() {
+				return path.Join("/dev/disk/by-id/", f.Name())
+			}
+		}
+	}
+	return ""
+}
+
 func GetDevicePathByScsiCmd(volumeId string) (string, error) {
 	deviceList, err := getDiskListWithLsBlk()
 	if err != nil {
@@ -182,7 +220,7 @@ func GetDevicePathByScsiCmd(volumeId string) (string, error) {
 			return devicePath, nil
 		}
 	}
-	log.Warningf("Failed to find device for the volumeID: %q by serial ID", volumeId)
+	log.Warningf("Failed to find device for the volumeID: %s by serial ID", volumeId)
 	return "", nil
 }
 
