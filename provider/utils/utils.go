@@ -12,7 +12,6 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/denverdino/aliyungo/metadata"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -247,30 +246,12 @@ func GetDefaultAK() (string, string, string) {
 	accessKeyID, accessSecret := GetLocalAK()
 
 	accessToken := ""
-	if accessKeyID == "" || accessSecret == "" {
-		accessKeyID, accessSecret, accessToken = GetSTSAK()
-	}
+	//if accessKeyID == "" || accessSecret == "" {
+	//	accessKeyID, accessSecret, accessToken = GetSTSAK()
+	//}
 
 	return accessKeyID, accessSecret, accessToken
 
-}
-
-// GetSTSAK get STS AK
-func GetSTSAK() (string, string, string) {
-	m := metadata.NewMetaData(nil)
-
-	rolename := ""
-	var err error
-	if rolename, err = m.Role(); err != nil {
-		log.Fatal("Get role name error: ", err.Error())
-		return "", "", ""
-	}
-	role, err := m.RamRoleToken(rolename)
-	if err != nil {
-		log.Fatal("Get STS Token error, " + err.Error())
-		return "", "", ""
-	}
-	return role.AccessKeyId, role.AccessKeySecret, role.SecurityToken
 }
 
 // GetLocalSystemAK get local access key
@@ -327,7 +308,7 @@ func PathExists(path string) (bool, error) {
 	}
 }
 
-//IsLikelyNotMountPoint check is mountpoint or not
+// IsLikelyNotMountPoint check is mountpoint or not
 func IsLikelyNotMountPoint(file string) (bool, error) {
 	stat, err := os.Stat(file)
 	if err != nil {

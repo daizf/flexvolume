@@ -38,7 +38,7 @@ const (
 	TYPE_PLUGIN_OSS   = "oss"
 	TYPE_PLUGIN_CPFS  = "cpfs"
 	PLUGIN_MONITORING = "monitoring"
-	LOGFILE_PREFIX    = "/var/log/alicloud/flexvolume_"
+	LOGFILE_PREFIX    = "/var/log/ecloud/flexvolume_"
 )
 
 // RunK8sAction run kubernetes command

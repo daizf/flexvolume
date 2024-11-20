@@ -230,13 +230,15 @@ const (
 //
 // You can read doc at http://docs.aliyun.com/#/pub/ecs/open-api/datatype&instanceattributestype
 type InstanceAttributesType struct {
+	AutoReleaseTime    string
 	InstanceId         string
 	InstanceName       string
 	Description        string
 	ImageId            string
 	RegionId           common.Region
 	ZoneId             string
-	CPU                int
+	Cpu                int
+	CpuOptions         CpuOptionsType
 	Memory             int
 	ClusterId          string
 	InstanceType       string
@@ -248,24 +250,112 @@ type InstanceAttributesType struct {
 	SecurityGroupIds   struct {
 		SecurityGroupId []string
 	}
-	PublicIpAddress         IpAddressSetType
-	InnerIpAddress          IpAddressSetType
-	InstanceNetworkType     string //enum Classic | Vpc
-	InternetMaxBandwidthIn  int
-	InternetMaxBandwidthOut int
-	InternetChargeType      common.InternetChargeType
-	CreationTime            util.ISO6801Time //time.Time
-	VpcAttributes           VpcAttributesType
-	EipAddress              EipAddressAssociateType
-	IoOptimized             StringOrBool
-	InstanceChargeType      common.InstanceChargeType
-	ExpiredTime             util.ISO6801Time
-	Tags                    struct {
+	PublicIpAddress            IpAddressSetType
+	InnerIpAddress             IpAddressSetType
+	InstanceNetworkType        string //enum Classic | Vpc
+	InternetMaxBandwidthIn     int
+	InternetMaxBandwidthOut    int
+	InternetChargeType         common.InternetChargeType
+	CreationTime               util.ISO6801Time //time.Time
+	CreditSpecification        string
+	DedicatedHostAttribute     DedicatedHostAttributeType
+	DedicatedInstanceAttribute DedicatedInstanceAttributeType
+	DeletionProtection         bool
+	DeploymentSetGroupNo       int
+	DeploymentSetId            string
+	DeviceAvailable            bool
+	EcsCapacityReservationAttr EcsCapacityReservationAttrType
+	VpcAttributes              VpcAttributesType
+	EipAddress                 EipAddressAssociateType
+	IoOptimized                StringOrBool
+	InstanceChargeType         common.InstanceChargeType
+	ExpiredTime                util.ISO6801Time
+	GPUAmount                  int
+	GPUSpec                    string
+	HibernationOptions         HibernationOptionsType
+	HpcClusterId               string
+	ISP                        string
+	LocalStorageAmount         int
+	LocalStorageCapacity       int
+	MetadataOptions            MetadataOptionsType
+	NetworkInterfaces          struct {
+		NetworkInterface []InstanceNetworkInterfaceType
+	}
+	OSName          string
+	OSNameEn        string
+	OSType          string
+	RdmaIpAddress   RdmaIpAddressType
+	Recyclable      bool
+	ResourceGroupId string
+	SaleCycle       string
+	SpotDuration    int
+	StartTime       string
+	StoppedMode     string
+	Tags            struct {
 		Tag []TagItemType
 	}
+	VlanId         string
 	SpotStrategy   SpotStrategyType
 	SpotPriceLimit float64
 	KeyPairName    string
+}
+
+type CpuOptionsType struct {
+	CoreCount      int
+	Numa           string
+	ThreadsPerCore int
+}
+
+type DedicatedHostAttributeType struct {
+	DedicatedHostClusterId string
+	DedicatedHostId        string
+	DedicatedHostName      string
+}
+
+type DedicatedInstanceAttributeType struct {
+	Affinity string
+	Tenancy  string
+}
+
+type EcsCapacityReservationAttrType struct {
+	CapacityReservationId         string
+	CapacityReservationPreference string
+}
+
+type HibernationOptionsType struct {
+	Configured bool
+}
+
+type MetadataOptionsType struct {
+	HttpEndpoint            string
+	HttpPutResponseHopLimit int
+	HttpTokens              string
+}
+
+type InstanceNetworkInterfaceType struct {
+	Ipv6Sets struct {
+		Ipv6Set []Ipv6SetType
+	}
+	MacAddress         string
+	NetworkInterfaceId string
+	PrimaryIpAddress   string
+	Type               string
+	PrivateIpSets      struct {
+		PrivateIpSet []PrivateIpSetType
+	}
+}
+
+type Ipv6SetType struct {
+	Ipv6Address string
+}
+
+type PrivateIpSetType struct {
+	Primary          bool
+	PrivateIpAddress string
+}
+
+type RdmaIpAddressType struct {
+	RdmaIpAddress []string
 }
 
 type DescribeInstanceAttributeResponse struct {
@@ -401,16 +491,34 @@ type DescribeInstancesArgs struct {
 	PrivateIpAddresses  string
 	InnerIpAddresses    string
 	PublicIpAddresses   string
+	EipAddresses        string
+	InstanceChargeType  common.InstanceChargeType
+	InternetChargeType  common.InternetChargeType
+	ImageId             string
+	LockReason          string
 	SecurityGroupId     string
-	Tag                 map[string]string
 	InstanceType        string
 	SpotStrategy        SpotStrategyType
 	common.Pagination
+	NextToken          string
+	MaxResults         int
+	Filter             []Filter
+	IoOptimized        *bool
+	InstanceTypeFamily string
+	KeyPairName        string
+	ResourceGroupId    string
+	HpcClusterId       string
+	RdmaIpAddresses    string
+	DryRun             bool
+	HttpEndpoint       string
+	HttpTokens         string
+	Tag                []TagType
 }
 
 type DescribeInstancesResponse struct {
 	common.Response
 	common.PaginationResult
+	NextToken string
 	Instances struct {
 		Instance []InstanceAttributesType
 	}
@@ -488,13 +596,18 @@ type DataDiskType struct {
 	Description        string
 	Device             string
 	DeleteWithInstance bool
+	PerformanceLevel   string
+	KMSKeyId           string
+	Encrypted          bool
 }
 
 type SystemDiskType struct {
-	Size        int
-	Category    DiskCategory //Enum cloud, ephemeral, ephemeral_ssd
-	DiskName    string
-	Description string
+	Size                 int
+	Category             DiskCategory //Enum cloud, ephemeral, ephemeral_ssd
+	DiskName             string
+	Description          string
+	PerformanceLevel     DiskPerformanceLevel
+	AutoSnapshotPolicyId string
 }
 
 type IoOptimized string
@@ -534,34 +647,76 @@ var (
 	IoOptimizedOptimized = IoOptimized("optimized")
 )
 
+type SecurityEnhancementStrategy string
+
+var (
+	InactiveSecurityEnhancementStrategy = SecurityEnhancementStrategy("Active")
+	DeactiveSecurityEnhancementStrategy = SecurityEnhancementStrategy("Deactive")
+)
+
 type CreateInstanceArgs struct {
-	RegionId                common.Region
-	ZoneId                  string
-	ImageId                 string
-	InstanceType            string
-	SecurityGroupId         string
-	InstanceName            string
-	Description             string
-	InternetChargeType      common.InternetChargeType
-	InternetMaxBandwidthIn  int
-	InternetMaxBandwidthOut int
-	HostName                string
-	Password                string
-	IoOptimized             IoOptimized
-	SystemDisk              SystemDiskType
-	DataDisk                []DataDiskType
-	VSwitchId               string
-	PrivateIpAddress        string
-	ClientToken             string
-	InstanceChargeType      common.InstanceChargeType
-	Period                  int
-	UserData                string
-	AutoRenew               bool
-	AutoRenewPeriod         int
-	SpotStrategy            SpotStrategyType
-	SpotPriceLimit          float64
-	KeyPairName             string
-	RamRoleName             string
+	RegionId                    common.Region
+	ZoneId                      string
+	ImageId                     string
+	ImageFamily                 string
+	InstanceType                string
+	SecurityGroupId             string
+	InstanceName                string
+	Description                 string
+	InternetChargeType          common.InternetChargeType
+	InternetMaxBandwidthIn      int
+	InternetMaxBandwidthOut     int
+	HostName                    string
+	Password                    string
+	PasswordInherit             bool
+	DeploymentSetId             string
+	ClusterId                   string
+	VlanId                      string
+	InnerIpAddress              string
+	IoOptimized                 IoOptimized
+	UseAdditionalService        *bool
+	SystemDisk                  SystemDiskType
+	DataDisk                    []DataDiskType
+	VSwitchId                   string
+	PrivateIpAddress            string
+	ClientToken                 string
+	InstanceChargeType          common.InstanceChargeType
+	Period                      int
+	PeriodUnit                  common.TimeType
+	UserData                    string
+	AutoRenew                   bool
+	AutoRenewPeriod             int
+	SpotStrategy                SpotStrategyType
+	SpotPriceLimit              float64
+	SpotDuration                *int
+	SpotInterruptionBehavior    string
+	KeyPairName                 string
+	RamRoleName                 string
+	SecurityEnhancementStrategy SecurityEnhancementStrategy
+	ResourceGroupId             string
+	HpcClusterId                string
+	DryRun                      bool
+	DedicatedHostId             string
+	CreditSpecification         string
+	DeletionProtection          bool
+	Affinity                    string
+	Tenancy                     string
+	StorageSetId                string
+	StorageSetPartitionNumber   int
+	HttpEndpoint                string
+	HttpTokens                  string
+	PrivatePoolOptions          []PrivatePoolOptionsType
+	Tag                         []TagType
+}
+
+type PrivatePoolOptionsType struct {
+	MatchCriteria string
+	Id            string
+}
+
+type TagType struct {
+	Key   string
+	Value string
 }
 
 type CreateInstanceResponse struct {
@@ -703,4 +858,121 @@ func (client *Client) DescribeInstanceRamRole(args *AttachInstancesArgs) (resp *
 		return response, err
 	}
 	return response, nil
+}
+
+type ModifyInstanceSpecArgs struct {
+	InstanceId              string
+	InstanceType            string
+	InternetMaxBandwidthOut *int
+	InternetMaxBandwidthIn  *int
+	ClientToken             string
+}
+
+type ModifyInstanceSpecResponse struct {
+	common.Response
+}
+
+//ModifyInstanceSpec  modify instance specification
+//
+// Notice: 1. An instance that was successfully modified once cannot be modified again within 5 minutes.
+// 	   2. The API only can be used Pay-As-You-Go (PostPaid) instance
+//
+// You can read doc at https://www.alibabacloud.com/help/doc-detail/57633.htm
+func (client *Client) ModifyInstanceSpec(args *ModifyInstanceSpecArgs) error {
+	response := ModifyInstanceSpecResponse{}
+	return client.Invoke("ModifyInstanceSpec", args, &response)
+}
+
+type ModifyInstanceVpcAttributeArgs struct {
+	InstanceId       string
+	VSwitchId        string
+	PrivateIpAddress string
+}
+
+type ModifyInstanceVpcAttributeResponse struct {
+	common.Response
+}
+
+//ModifyInstanceVpcAttribute  modify instance vswitchID and private ip address
+//
+// You can read doc at https://www.alibabacloud.com/help/doc-detail/25504.htm
+func (client *Client) ModifyInstanceVpcAttribute(args *ModifyInstanceVpcAttributeArgs) error {
+	response := ModifyInstanceVpcAttributeResponse{}
+	return client.Invoke("ModifyInstanceVpcAttribute", args, &response)
+}
+
+type ModifyInstanceChargeTypeArgs struct {
+	InstanceIds      string
+	RegionId         common.Region
+	Period           int
+	PeriodUnit       common.TimeType
+	IncludeDataDisks bool
+	DryRun           bool
+	AutoPay          bool
+	ClientToken      string
+}
+
+type ModifyInstanceChargeTypeResponse struct {
+	common.Response
+	Order string
+}
+
+//ModifyInstanceChargeType  modify instance charge type
+//
+// You can read doc at https://www.alibabacloud.com/help/doc-detail/25504.htm
+func (client *Client) ModifyInstanceChargeType(args *ModifyInstanceChargeTypeArgs) (*ModifyInstanceChargeTypeResponse, error) {
+	response := &ModifyInstanceChargeTypeResponse{}
+	if err := client.Invoke("ModifyInstanceChargeType", args, response); err != nil {
+		return response, err
+	}
+	return response, nil
+}
+
+type RenewalStatus string
+
+const (
+	RenewAutoRenewal = RenewalStatus("AutoRenewal")
+	RenewNormal      = RenewalStatus("Normal")
+	RenewNotRenewal  = RenewalStatus("NotRenewal")
+)
+
+type ModifyInstanceAutoRenewAttributeArgs struct {
+	InstanceId    string
+	RegionId      common.Region
+	Duration      int
+	AutoRenew     bool
+	RenewalStatus RenewalStatus
+}
+
+// You can read doc at https://www.alibabacloud.com/help/doc-detail/52843.htm
+func (client *Client) ModifyInstanceAutoRenewAttribute(args *ModifyInstanceAutoRenewAttributeArgs) error {
+	response := &common.Response{}
+	return client.Invoke("ModifyInstanceAutoRenewAttribute", args, response)
+}
+
+type DescribeInstanceAutoRenewAttributeArgs struct {
+	InstanceId string
+	RegionId   common.Region
+}
+
+type InstanceRenewAttribute struct {
+	InstanceId       string
+	Duration         int
+	AutoRenewEnabled bool
+	PeriodUnit       string
+	RenewalStatus    RenewalStatus
+}
+
+type DescribeInstanceAutoRenewAttributeResponse struct {
+	common.Response
+	InstanceRenewAttributes struct {
+		InstanceRenewAttribute []InstanceRenewAttribute
+	}
+}
+
+// You can read doc at https://www.alibabacloud.com/help/doc-detail/52844.htm
+func (client *Client) DescribeInstanceAutoRenewAttribute(args *DescribeInstanceAutoRenewAttributeArgs) (*DescribeInstanceAutoRenewAttributeResponse, error) {
+	response := &DescribeInstanceAutoRenewAttributeResponse{}
+	err := client.Invoke("DescribeInstanceAutoRenewAttribute", args, response)
+	return response, err
 }

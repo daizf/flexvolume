@@ -1,0 +1,24 @@
+# github.com/denverdino/aliyungo v0.0.0-20230411124812-ab98a9173ace
+## explicit; go 1.15
+github.com/denverdino/aliyungo/common
+github.com/denverdino/aliyungo/common/utils
+github.com/denverdino/aliyungo/ecs
+github.com/denverdino/aliyungo/metadata
+github.com/denverdino/aliyungo/nas
+github.com/denverdino/aliyungo/util
+# github.com/nightlyone/lockfile v1.0.0
+## explicit; go 1.11
+github.com/nightlyone/lockfile
+# github.com/opentracing/opentracing-go v1.2.0
+## explicit; go 1.14
+github.com/opentracing/opentracing-go
+github.com/opentracing/opentracing-go/ext
+github.com/opentracing/opentracing-go/log
+# github.com/sirupsen/logrus v1.9.3
+## explicit; go 1.13
+github.com/sirupsen/logrus
+# golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8
+## explicit; go 1.17
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/unix
+golang.org/x/sys/windows
