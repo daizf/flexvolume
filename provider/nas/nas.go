@@ -79,12 +79,14 @@ func (p *NasPlugin) Mount(opts interface{}, mountPath string) utils.Result {
 	if opt.Opts != "" {
 		mntCmd = fmt.Sprintf("mount -t nfs -o vers=%s,%s %s:%s %s", opt.Vers, opt.Opts, opt.Server, opt.Path, mountPath)
 	}
-	log.Infof("Exec Nas Mount Cdm: %s", mntCmd)
+	log.Infof("Exec Nas Mount Cmd: %s", mntCmd)
 	_, err := utils.Run(mntCmd)
-
+	if err != nil && strings.Contains(err.Error(), "access denied by server while mounting") {
+		utils.FinishError("Nas, Mount Nfs fail with error: " + err.Error())
+	}
 	// Mount to nfs Sub-directory
 	if err != nil && opt.Path != "/" {
-		if strings.Contains(err.Error(), "reason given by server: No such file or directory") || strings.Contains(err.Error(), "access denied by server while mounting") {
+		if strings.Contains(err.Error(), "reason given by server: No such file or directory") {
 			p.createNasSubDir(opt)
 			if _, err := utils.Run(mntCmd); err != nil {
 				utils.FinishError("Nas, Mount Nfs sub directory fail: " + err.Error())
@@ -300,7 +302,6 @@ func (p *NasPlugin) createNasSubDir(opt *NasOptions) {
 	log.Info("Create Sub Directory success: ", opt.Path)
 }
 
-//
 func (p *NasPlugin) checkOptions(opt *NasOptions) error {
 	// NFS Server url
 	if opt.Server == "" {
