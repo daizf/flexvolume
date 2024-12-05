@@ -80,7 +80,16 @@ func (p *NasPlugin) Mount(opts interface{}, mountPath string) utils.Result {
 		mntCmd = fmt.Sprintf("mount -t nfs -o vers=%s,%s %s:%s %s", opt.Vers, opt.Opts, opt.Server, opt.Path, mountPath)
 	}
 	log.Infof("Exec Nas Mount Cmd: %s", mntCmd)
-	_, err := utils.Run(mntCmd)
+
+	maxRetry := 10
+	var err error
+	for i := 0; i < maxRetry; i++ {
+		_, err = utils.Run(mntCmd)
+		if err == nil {
+			break
+		}
+		time.Sleep(3 * time.Second)
+	}
 	if err != nil && strings.Contains(err.Error(), "access denied by server while mounting") {
 		utils.FinishError("Nas, Mount Nfs fail with error: " + err.Error())
 	}
