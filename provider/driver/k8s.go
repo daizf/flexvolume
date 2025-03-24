@@ -2,6 +2,7 @@ package driver
 
 import (
 	"encoding/json"
+	"github.com/AliyunContainerService/flexvolume/provider/pfs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -36,6 +37,7 @@ const (
 	TYPE_PLUGIN_DISK  = "disk"
 	TYPE_PLUGIN_NAS   = "nas"
 	TYPE_PLUGIN_OSS   = "oss"
+	TYPE_PLUGIN_PFS   = "pfs"
 	TYPE_PLUGIN_CPFS  = "cpfs"
 	PLUGIN_MONITORING = "monitoring"
 	LOGFILE_PREFIX    = "/var/lib/kubelet/flexvolume_"
@@ -61,6 +63,8 @@ func RunK8sAction() {
 		RunPlugin(&cpfs.CpfsPlugin{})
 	} else if os.Args[1] == PLUGIN_MONITORING {
 		monitor.Monitoring()
+	} else if driver == TYPE_PLUGIN_PFS {
+		RunPlugin(&pfs.PfsPlugin{})
 	} else {
 		utils.Finish(utils.Fail("Not Support Plugin Driver: " + os.Args[0]))
 	}

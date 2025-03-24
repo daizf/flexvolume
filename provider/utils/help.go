@@ -20,9 +20,9 @@ func Usage() {
 	fmt.Printf("In K8s Mode: " +
 		"Use binary file as the first parameter, and format support:\n" +
 		"    plugin init: \n" +
-		"    plugin attach: for alicloud disk plugin\n" +
-		"    plugin detach: for alicloud disk plugin\n" +
-		"    plugin mount:  for nas, oss plugin\n" +
-		"    plugin umount: for nas, oss plugin\n\n" +
+		"    plugin attach: for ecloud disk plugin\n" +
+		"    plugin detach: for ecloud disk plugin\n" +
+		"    plugin mount:  for nas, pfs plugin\n" +
+		"    plugin umount: for nas, pfs plugin\n\n" +
 		"You can refer to K8s flexvolume docs: \n")
 }
