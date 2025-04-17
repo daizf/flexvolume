@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-cd ${GOPATH}/src/github.com/AliyunContainerService/flexvolume/
 GIT_SHA=`git rev-parse --short HEAD || echo "HEAD"`
 
 
@@ -12,4 +11,3 @@ if [[ "$(uname -s)" == "Linux" ]];then
 else
 	CGO_ENABLED=0 go build -o flexvolume-linux 
 fi
-

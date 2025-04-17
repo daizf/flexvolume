@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteMany
   flexVolume:
-    driver: "alicloud/oss"
+    driver: "ecloud/oss"
     options:
       bucket: "sigma-python"
       url: "oss-cn-hangzhou.aliyuncs.com"

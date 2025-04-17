@@ -14,9 +14,9 @@ import (
 // const values for monitoring
 const (
 	NSENTER_CMD = "/acs/nsenter --mount=/proc/1/ns/mnt "
-	DISK_BIN    = "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~disk/disk"
-	OSS_BIN     = "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/oss"
-	NAS_BIN     = "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~nas/nas"
+	DISK_BIN    = "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~disk/disk"
+	OSS_BIN     = "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss"
+	NAS_BIN     = "/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~nas/nas"
 
 	FLEXVOLUME_CONFIG_FILE = "/host/etc/kubernetes/flexvolume.conf"
 	HOST_SYS_LOG           = "/host/var/log/messages"

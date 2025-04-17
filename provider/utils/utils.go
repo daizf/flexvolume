@@ -27,7 +27,7 @@ type DefaultOptions struct {
 
 // const values
 const (
-	encodedCredPath = "/etc/kubernetes/cloud-config.alicloud"
+	encodedCredPath = "/etc/kubernetes/cloud-config.ecloud"
 	credPath        = "/etc/kubernetes/cloud-config"
 	USER_AKID       = "/etc/.volumeak/akId"
 	USER_AKSECRET   = "/etc/.volumeak/akSecret"

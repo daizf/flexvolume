@@ -47,23 +47,24 @@ func (p *OssPlugin) Init() utils.Result {
 }
 
 // Mount Paras format:
-// /usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/oss
+// /usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss
 // mount
-// /var/lib/kubelet/pods/e000259c-4dac-11e8-a884-04163e0f011e/volumes/alicloud~oss/oss1
-// {
-//   "akId":"***",
-//   "akSecret":"***",
-//   "bucket":"oss",
-//   "kubernetes.io/fsType": "",
-//   "kubernetes.io/pod.name": "nginx-oss-deploy-f995c89f4-kj25b",
-//   "kubernetes.io/pod.namespace":"default",
-//   "kubernetes.io/pod.uid":"e000259c-4dac-11e8-a884-04163e0f011e",
-//   "kubernetes.io/pvOrVolumeName":"oss1",
-//   "kubernetes.io/readwrite":"rw",
-//   "kubernetes.io/serviceAccount.name":"default",
-//   "otherOpts":"-o max_stat_cache_size=0 -o allow_other",
-//   "url":"oss-cn-hangzhou.aliyuncs.com"
-// }
+// /var/lib/kubelet/pods/e000259c-4dac-11e8-a884-04163e0f011e/volumes/ecloud~oss/oss1
+//
+//	{
+//	  "akId":"***",
+//	  "akSecret":"***",
+//	  "bucket":"oss",
+//	  "kubernetes.io/fsType": "",
+//	  "kubernetes.io/pod.name": "nginx-oss-deploy-f995c89f4-kj25b",
+//	  "kubernetes.io/pod.namespace":"default",
+//	  "kubernetes.io/pod.uid":"e000259c-4dac-11e8-a884-04163e0f011e",
+//	  "kubernetes.io/pvOrVolumeName":"oss1",
+//	  "kubernetes.io/readwrite":"rw",
+//	  "kubernetes.io/serviceAccount.name":"default",
+//	  "otherOpts":"-o max_stat_cache_size=0 -o allow_other",
+//	  "url":"oss-cn-hangzhou.aliyuncs.com"
+//	}
 func (p *OssPlugin) Mount(opts interface{}, mountPath string) utils.Result {
 
 	// logout oss paras
@@ -111,9 +112,9 @@ func (p *OssPlugin) Mount(opts interface{}, mountPath string) utils.Result {
 }
 
 // Unmount format
-// /usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/oss
+// /usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss
 // unmount
-// /var/lib/kubelet/pods/e000259c-4dac-11e8-a884-00163e0f011e/volumes/alicloud~oss/oss1
+// /var/lib/kubelet/pods/e000259c-4dac-11e8-a884-00163e0f011e/volumes/ecloud~oss/oss1
 func (p *OssPlugin) Unmount(mountPoint string) utils.Result {
 	log.Infof("Oss Plugin Umount: %s", strings.Join(os.Args, ","))
 
@@ -143,7 +144,7 @@ func (p *OssPlugin) Unmount(mountPoint string) utils.Result {
 }
 
 // check if subPath volume exist, if subpath is mounted, umount it;
-// /var/lib/kubelet/pods/6dd977d1-302a-11e9-b51c-00163e0cd246/volumes/alicloud~oss/oss1
+// /var/lib/kubelet/pods/6dd977d1-302a-11e9-b51c-00163e0cd246/volumes/ecloud~oss/oss1
 // /var/lib/kubelet/pods/6dd977d1-302a-11e9-b51c-00163e0cd246/volume-subpaths/oss1/nginx-flexvolume-oss/0
 func checkSubpathVolumes(mountPoint string) {
 	podId := ""

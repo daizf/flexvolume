@@ -61,7 +61,7 @@ func fixIssueOrphanPod() {
 				podFixedList = podFixedList + orphanUid
 
 				// check oss, nas, disk path;
-				drivers := []string{"alicloud~disk", "alicloud~nas", "alicloud~oss", "kubernetes.io~nfs"}
+				drivers := []string{"ecloud~disk", "ecloud~nas", "ecloud~oss", "kubernetes.io~nfs"}
 				for _, driver := range drivers {
 					volHostPath := "/var/lib/kubelet/pods/" + orphanUid + "/volumes/" + driver
 					volPodPath := "/host/var/lib/kubelet/pods/" + orphanUid + "/volumes/" + driver

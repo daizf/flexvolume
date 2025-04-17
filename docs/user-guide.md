@@ -33,7 +33,7 @@ spec:
       volumes:
         - name: "d-bp1j17ifxfasvts3tf40"
           flexVolume:
-            driver: "alicloud/disk"
+            driver: "ecloud/disk"
             fsType: "ext4"
             options:
               volumeId: "d-bp1j17ifxfasvts3tf40"
@@ -55,7 +55,7 @@ spec:
     - ReadWriteOnce
   storageClassName: slow
   flexVolume:
-    driver: "alicloud/disk"
+    driver: "ecloud/disk"
     fsType: "ext4"
     options:
       volumeId: "d-bp1j17ifxfasvts3tf40" 
@@ -83,7 +83,7 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "flexvolume-alicloud-example"
+  name: "flexvolume-ecloud-example"
 spec:
   containers:
     - name: "nginx"
@@ -138,7 +138,7 @@ spec:
       volumes:
         - name: "nas1"
           flexVolume:
-            driver: "alicloud/nas"
+            driver: "ecloud/nas"
             options:
               server: "0cd8b4a576-uih75.cn-hangzhou.nas.aliyuncs.com"
               path: "/k8s"
@@ -162,7 +162,7 @@ spec:
     - ReadWriteMany
   storageClassName: fast
   flexVolume:
-    driver: "alicloud/nas"
+    driver: "ecloud/nas"
     options:
       server: "0cd8b4a576-uih75.cn-hangzhou.nas.aliyuncs.com"
       path: "/k8s"
@@ -244,7 +244,7 @@ spec:
       volumes:
         - name: "oss1"
           flexVolume:
-            driver: "alicloud/oss"
+            driver: "ecloud/oss"
             options:
               bucket: "docker"
               url: "oss-cn-hangzhou.aliyuncs.com"
@@ -269,7 +269,7 @@ spec:
     - ReadWriteMany
   storageClassName: slow
   flexVolume:
-    driver: "alicloud/oss"
+    driver: "ecloud/oss"
     options:
       bucket: "docker"
       url: "oss-cn-hangzhou.aliyuncs.com"

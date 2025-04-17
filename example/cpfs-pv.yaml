@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteMany
   flexVolume:
-    driver: "alicloud/cpfs"
+    driver: "ecloud/cpfs"
     options:
       server: "192.168.0.1@tcp"
       fileSystem: "cpfs"

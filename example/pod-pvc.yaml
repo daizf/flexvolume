@@ -1,7 +1,7 @@
 kind: Pod
 apiVersion: v1
 metadata:
-  name: pod-nginx-flexvolume-alicloud-pv
+  name: pod-nginx-flexvolume-ecloud-pv
 spec:
   volumes:
     - name: task-pv-storage

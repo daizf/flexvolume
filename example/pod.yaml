@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "flexvolume-alicloud-example"
+  name: "flexvolume-ecloud-example"
 spec:
   containers:
     - name: "nginx"
@@ -12,7 +12,7 @@ spec:
   volumes:
     - name: "d-bp1au6l6mbscl64apz0n"
       flexVolume:
-        driver: "alicloud/disk"
+        driver: "ecloud/disk"
         fsType: "ext4"
         options:
           volumeId: "d-bp1au6l6mbscl64apz0n"

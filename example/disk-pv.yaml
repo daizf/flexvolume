@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   flexVolume:
-    driver: "alicloud/disk"
+    driver: "ecloud/disk"
     fsType: "ext4"
     options:
       volumeId: "d-bp1j17ifxfasvts3tf40" 

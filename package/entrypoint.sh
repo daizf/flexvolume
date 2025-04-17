@@ -60,21 +60,21 @@ restart_kubelet="false"
 
 install_disk() {
     # first install
-    if [ ! -f "/host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~disk/disk" ];then
-        mkdir -p /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~disk/
-        cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~disk/disk
-        chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~disk/disk
+    if [ ! -f "/host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~disk/disk" ];then
+        mkdir -p /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~disk/
+        cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~disk/disk
+        chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~disk/disk
 
     # update status
     else
-        oldmd5=`md5sum /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~disk/disk | awk '{print $1}'`
+        oldmd5=`md5sum /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~disk/disk | awk '{print $1}'`
         newmd5=`md5sum /acs/flexvolume | awk '{print $1}'`
 
         # update disk bianary
         if [ "$oldmd5" != "$newmd5" ]; then
-            rm -rf /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~disk/disk
-            cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~disk/disk
-            chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~disk/disk
+            rm -rf /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~disk/disk
+            cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~disk/disk
+            chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~disk/disk
 
         fi
     fi
@@ -109,21 +109,21 @@ install_nas() {
     #fi
 
     # first install
-    if [ ! -f "/host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~nas/nas" ];then
-        mkdir -p /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~nas/
-        cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~nas/nas
-        chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~nas/nas
+    if [ ! -f "/host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~nas/nas" ];then
+        mkdir -p /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~nas/
+        cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~nas/nas
+        chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~nas/nas
 
     # update nas
     else
-        oldmd5=`md5sum /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~nas/nas | awk '{print $1}'`
+        oldmd5=`md5sum /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~nas/nas | awk '{print $1}'`
         newmd5=`md5sum /acs/flexvolume | awk '{print $1}'`
 
         # install a new bianary
         if [ "$oldmd5" != "$newmd5" ]; then
-            rm -rf /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~nas/nas
-            cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~nas/nas
-            chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~nas/nas
+            rm -rf /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~nas/nas
+            cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~nas/nas
+            chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~nas/nas
         fi
     fi
 
@@ -177,21 +177,21 @@ install_oss() {
 
 
     # first install OSS
-    if [ ! -f "/host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/oss" ];then
-        mkdir -p /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/
-        cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/oss
-        chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/oss
+    if [ ! -f "/host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss" ];then
+        mkdir -p /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/
+        cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss
+        chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss
 
     # update oss
     else
-        oldmd5=`md5sum /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/oss | awk '{print $1}'`
+        oldmd5=`md5sum /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss | awk '{print $1}'`
         newmd5=`md5sum /acs/flexvolume | awk '{print $1}'`
 
         # install a new bianary
         if [ "$oldmd5" != "$newmd5" ]; then
-            rm -rf /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/oss
-            cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/oss
-            chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~oss/oss
+            rm -rf /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss
+            cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss
+            chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss
 
         fi
     fi
@@ -267,21 +267,21 @@ install_cpfs() {
     fi
 
     # first install cpfs
-    if [ ! -f "/host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~cpfs/cpfs" ];then
-        mkdir -p /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~cpfs/
-        cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~cpfs/cpfs
-        chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~cpfs/cpfs
+    if [ ! -f "/host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~cpfs/cpfs" ];then
+        mkdir -p /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~cpfs/
+        cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~cpfs/cpfs
+        chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~cpfs/cpfs
 
     # upgrade cpfs
     else
-        oldmd5=`md5sum /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~cpfs/cpfs | awk '{print $1}'`
+        oldmd5=`md5sum /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~cpfs/cpfs | awk '{print $1}'`
         newmd5=`md5sum /acs/flexvolume | awk '{print $1}'`
 
         # install a new bianary
         if [ "$oldmd5" != "$newmd5" ]; then
-            rm -rf /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~cpfs/cpfs
-            cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~cpfs/cpfs
-            chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/alicloud~cpfs/cpfs
+            rm -rf /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~cpfs/cpfs
+            cp /acs/flexvolume /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~cpfs/cpfs
+            chmod 755 /host/usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~cpfs/cpfs
 
         fi
     fi

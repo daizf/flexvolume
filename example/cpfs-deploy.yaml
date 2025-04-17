@@ -18,7 +18,7 @@ spec:
       volumes:
         - name: "cpfs1"
           flexVolume:
-            driver: "alicloud/cpfs"
+            driver: "ecloud/cpfs"
             options:
               server: "192.168.0.1@tcp"
               fileSystem: "cpfs"

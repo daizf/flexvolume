@@ -1,8 +1,6 @@
-# 阿里云容器服务 K8S Flexvolume 插件
+# 移动云容器服务 K8S Flexvolume 插件
 
-[![Build Status](https://travis-ci.org/AliyunContainerService/flexvolume.svg?branch=master)](https://travis-ci.org/AliyunContainerService/flexvolume) [![CircleCI](https://circleci.com/gh/AliyunContainerService/flexvolume.svg?style=svg)](https://circleci.com/gh/AliyunContainerService/flexvolume) [![Go Report Card](https://goreportcard.com/badge/github.com/AliyunContainerService/flexvolume)](https://goreportcard.com/report/github.com/AliyunContainerService/flexvolume)
-
-针对阿里云云盘、NAS、OSS存储开发的flexvolume 插件，可以支持kubernetes pod 自动绑定阿里云存储服务。
+针对移动云云盘、NAS、OSS、PFS存储开发的flexvolume插件，可以支持kubernetes pod、容器实例ECI 自动绑定移动云存储服务。
 
 此版本支持Flexvolume, 静态pv. 对于动态pv尚不支持.
 
@@ -12,11 +10,11 @@
 ## 安装使用该插件：
 
 
-通过下面yaml配置进行部署阿里云K8S存储插件，目前支持CentOS 7 操作系统；
+通过下面yaml配置进行部署移动云K8S存储插件，目前支持CentOS、BC-Linux、BC-Euler 操作系统；
 
 **注意：**
 > 1. 使用oss数据卷服务时必须配置Secret，如果只使用nas、云盘，则可以不配置Secret；
-> 2. 使用flexvolume需要kubelet关闭`--enable-controller-attach-detach`选项。默认阿里云K8S集群已经关闭此选项；
+> 2. 使用flexvolume需要kubelet关闭`--enable-controller-attach-detach`选项。默认移动云K8S集群已经关闭此选项；
 > 3. 在kube-system用户空间部署flexvolume；
 
 
@@ -76,7 +74,7 @@ spec:
         - name: etcdir
           mountPath: /host/etc/
         - name: logdir
-          mountPath: /var/log/alicloud/
+          mountPath: /var/log/ecloud/
       volumes:
       - name: usrdir
         hostPath:
@@ -86,7 +84,7 @@ spec:
           path: /etc/
       - name: logdir
         hostPath:
-          path: /var/log/alicloud/
+          path: /var/log/ecloud/
   updateStrategy:
     type: RollingUpdate
 ```

@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteMany
   flexVolume:
-    driver: "alicloud/nas"
+    driver: "ecloud/nas"
     options:
       server: "**-uih75.cn-hangzhou.nas.aliyuncs.com"
       path: "/k8s"

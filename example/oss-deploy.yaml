@@ -18,7 +18,7 @@ spec:
       volumes:
         - name: "oss1"
           flexVolume:
-            driver: "alicloud/oss"
+            driver: "ecloud/oss"
             options:
               bucket: "sigma-python"
               url: "oss-cn-hangzhou.aliyuncs.com"

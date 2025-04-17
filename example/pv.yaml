@@ -9,7 +9,7 @@ spec:
     - ReadWriteOnce
   storageClassName: slow
   flexVolume:
-    driver: "alicloud/disk"
+    driver: "ecloud/disk"
     fsType: "ext4"
     options:
       volumeId: "d-bp1au6l6mbscl64apz0n" 
