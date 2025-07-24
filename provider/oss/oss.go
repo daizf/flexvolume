@@ -1,10 +1,8 @@
 package oss
 
 import (
-	"encoding/base64"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -17,7 +15,7 @@ import (
 // OssOptions oss plugin options
 type OssOptions struct {
 	Bucket      string `json:"bucket"`
-	Url         string `json:"url"`
+	Endpoint    string `json:"endpoint"`
 	OtherOpts   string `json:"otherOpts"`
 	AkId        string `json:"akId"`
 	AkSecret    string `json:"akSecret"`
@@ -26,9 +24,9 @@ type OssOptions struct {
 	SecretAkSec string `json:"kubernetes.io/secret/akSecret"`
 }
 
-// const values
+// CredentialFile const values
 const (
-	CredentialFile = "/etc/passwd-ossfs"
+	CredentialFile = "/root/.aws/credentials"
 )
 
 // OssPlugin oss plugin
@@ -49,7 +47,7 @@ func (p *OssPlugin) Init() utils.Result {
 // Mount Paras format:
 // /usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss
 // mount
-// /var/lib/kubelet/pods/e000259c-4dac-11e8-a884-04163e0f011e/volumes/ecloud~oss/oss1
+// /var/lib/kubelet/pods/e000259c-4dac-11e8-a884-04163e0f011e/volumes/ecloud~oss/oss
 //
 //	{
 //	  "akId":"***",
@@ -62,7 +60,7 @@ func (p *OssPlugin) Init() utils.Result {
 //	  "kubernetes.io/pvOrVolumeName":"oss1",
 //	  "kubernetes.io/readwrite":"rw",
 //	  "kubernetes.io/serviceAccount.name":"default",
-//	  "otherOpts":"-o max_stat_cache_size=0 -o allow_other",
+//	  "otherOpts":"-o http-timeout=10 -o cheap",
 //	  "url":"oss-cn-hangzhou.aliyuncs.com"
 //	}
 func (p *OssPlugin) Mount(opts interface{}, mountPath string) utils.Result {
@@ -75,7 +73,7 @@ func (p *OssPlugin) Mount(opts interface{}, mountPath string) utils.Result {
 			argStr += tmpStr + ", "
 		}
 	}
-	argStr = argStr + "VolumeName: " + opt.VolumeName + ", AkId: " + opt.AkId + ", Bucket: " + opt.Bucket + ", url: " + opt.Url + ", OtherOpts: " + opt.OtherOpts
+	argStr = argStr + "VolumeName: " + opt.VolumeName + ", AkId: " + opt.AkId + ", Bucket: " + opt.Bucket + ", url: " + opt.Endpoint + ", OtherOpts: " + opt.OtherOpts
 	log.Infof("Oss Plugin Mount: %s", argStr)
 
 	if err := p.checkOptions(opt); err != nil {
@@ -91,16 +89,16 @@ func (p *OssPlugin) Mount(opts interface{}, mountPath string) utils.Result {
 		utils.FinishError("Oss, Mount fail with create Path error: " + err.Error() + mountPath)
 	}
 
-	// Save ak file for ossfs
+	// Save ak file for goofys
 	if err := p.saveCredential(opt); err != nil {
 		utils.FinishError("Oss, Save AK file fail: " + err.Error())
 	}
 
 	// default use allow_other
-	mntCmd := fmt.Sprintf("systemd-run --scope -- ossfs %s %s -ourl=%s -o allow_other %s", opt.Bucket, mountPath, opt.Url, opt.OtherOpts)
+	mntCmd := fmt.Sprintf("systemd-run --scope -- goofys --profile default --endpoint %s %s %s %s", opt.OtherOpts, opt.Endpoint, opt.Bucket, mountPath)
 	systemdCmd := fmt.Sprintf("which systemd-run")
 	if _, err := utils.Run(systemdCmd); err != nil {
-		mntCmd = fmt.Sprintf("ossfs %s %s -ourl=%s -o allow_other %s", opt.Bucket, mountPath, opt.Url, opt.OtherOpts)
+		mntCmd = fmt.Sprintf("goofys --profile default --endpoint %s %s %s %s", opt.OtherOpts, opt.Endpoint, opt.Bucket, mountPath)
 		log.Infof("Mount oss bucket without systemd-run")
 	}
 	if out, err := utils.Run(mntCmd); err != nil {
@@ -114,7 +112,7 @@ func (p *OssPlugin) Mount(opts interface{}, mountPath string) utils.Result {
 // Unmount format
 // /usr/libexec/kubernetes/kubelet-plugins/volume/exec/ecloud~oss/oss
 // unmount
-// /var/lib/kubelet/pods/e000259c-4dac-11e8-a884-00163e0f011e/volumes/ecloud~oss/oss1
+// /var/lib/kubelet/pods/e000259c-4dac-11e8-a884-00163e0f011e/volumes/ecloud~oss/oss
 func (p *OssPlugin) Unmount(mountPoint string) utils.Result {
 	log.Infof("Oss Plugin Umount: %s", strings.Join(os.Args, ","))
 
@@ -211,54 +209,22 @@ func (p *OssPlugin) Mountdevice(mountPath string, opts interface{}) utils.Result
 // save ak file: bucket:ak_id:ak_secret
 func (p *OssPlugin) saveCredential(options *OssOptions) error {
 
-	oldContentByte := []byte{}
-	if utils.IsFileExisting(CredentialFile) {
-		tmpValue, err := ioutil.ReadFile(CredentialFile)
-		if err != nil {
-			return err
-		}
-		oldContentByte = tmpValue
-	}
+	mntCmd := fmt.Sprintf("generate-credentials default %s %s", options.AkId, options.AkSecret)
 
-	oldContentStr := string(oldContentByte[:])
-	newContentStr := ""
-	for _, line := range strings.Split(oldContentStr, "\n") {
-		lineList := strings.Split(line, ":")
-		if len(lineList) != 3 || lineList[0] == options.Bucket {
-			continue
-		}
-		newContentStr += line + "\n"
-	}
-
-	newContentStr = options.Bucket + ":" + options.AkId + ":" + options.AkSecret + "\n" + newContentStr
-	if err := ioutil.WriteFile(CredentialFile, []byte(newContentStr), 0640); err != nil {
-		log.Errorf("Save Credential File failed, %s, %s", newContentStr, err)
-		return err
+	if out, err := utils.Run(mntCmd); err != nil {
+		utils.FinishError("Create OSS credentials fail: " + err.Error() + ", out: " + out)
 	}
 	return nil
 }
 
 // Check oss options
 func (p *OssPlugin) checkOptions(opt *OssOptions) error {
-	if opt.Url == "" || opt.Bucket == "" {
-		return errors.New("Oss: Url or bucket is empty")
+	if opt.Endpoint == "" || opt.Bucket == "" {
+		return errors.New("oss: endpoint or bucket is empty")
 	}
 
-	if opt.SecretAkId != "" && opt.SecretAkSec != "" {
-		tmpId, err := base64.StdEncoding.DecodeString(opt.SecretAkId)
-		if err != nil {
-			return errors.New("Oss: SecretAkId decode error")
-		}
-		opt.AkId = string(tmpId)
-		tmpSec, err := base64.StdEncoding.DecodeString(opt.SecretAkSec)
-		if err != nil {
-			return errors.New("Oss: SecretAkSec decode error")
-		}
-		opt.AkSecret = string(tmpSec)
-	}
-	// if not input ak from user, use the default ak value
 	if opt.AkId == "" || opt.AkSecret == "" {
-		opt.AkId, opt.AkSecret = utils.GetLocalAK()
+		return errors.New("oss: akId or akSecret is empty")
 	}
 
 	if opt.OtherOpts != "" {

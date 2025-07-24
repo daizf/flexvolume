@@ -20,8 +20,8 @@ spec:
           flexVolume:
             driver: "ecloud/oss"
             options:
-              bucket: "sigma-python"
-              url: "oss-cn-hangzhou.aliyuncs.com"
+              bucket: "sigma-data"
+              endpoint: "eos.hubei-3-internal.cmecloud.cn"
               otherOpts: "-o max_stat_cache_size=0 -o allow_other"
               akId: ""
               akSecret: ""
