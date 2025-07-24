@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/AliyunContainerService/flexvolume/provider/utils"
-	"github.com/denverdino/aliyungo/ecs"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -31,7 +30,6 @@ const (
 
 // OssPlugin oss plugin
 type OssPlugin struct {
-	client *ecs.Client
 }
 
 // NewOptions plugin new options
@@ -95,7 +93,7 @@ func (p *OssPlugin) Mount(opts interface{}, mountPath string) utils.Result {
 	}
 
 	// default use allow_other
-	mntCmd := fmt.Sprintf("systemd-run --scope -- goofys --profile default --endpoint %s %s %s %s", opt.OtherOpts, opt.Endpoint, opt.Bucket, mountPath)
+	mntCmd := fmt.Sprintf("systemd-run --setenv=HOME=/root --scope -- goofys --profile default --endpoint %s %s %s %s", opt.OtherOpts, opt.Endpoint, opt.Bucket, mountPath)
 	systemdCmd := fmt.Sprintf("which systemd-run")
 	if _, err := utils.Run(systemdCmd); err != nil {
 		mntCmd = fmt.Sprintf("goofys --profile default --endpoint %s %s %s %s", opt.OtherOpts, opt.Endpoint, opt.Bucket, mountPath)
