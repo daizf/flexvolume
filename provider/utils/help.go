@@ -4,7 +4,7 @@ import "fmt"
 
 var (
 	// VERSION should be updated by hand at each release
-	VERSION = "v1.12.6"
+	VERSION = "v1.13.0"
 
 	// GITCOMMIT will be overwritten automatically by the build system
 	GITCOMMIT = "HEAD"
@@ -22,7 +22,7 @@ func Usage() {
 		"    plugin init: \n" +
 		"    plugin attach: for ecloud disk plugin\n" +
 		"    plugin detach: for ecloud disk plugin\n" +
-		"    plugin mount:  for nas, pfs plugin\n" +
-		"    plugin umount: for nas, pfs plugin\n\n" +
+		"    plugin mount:  for nas, pfs, oss plugin\n" +
+		"    plugin umount: for nas, pfs, oss plugin\n\n" +
 		"You can refer to K8s flexvolume docs: \n")
 }
